@@ -45,7 +45,7 @@ jobs:
               const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
               const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
               const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
-              const result = execSync(`python3 chatgpt_agent.py '${baseContent}' '${headContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+              const result = execSync(`python3 chatgpt_agent.py '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
               github.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
@@ -53,4 +53,3 @@ jobs:
                 body: `Results for ${file}:\n\n${result}`
               });
             }
-

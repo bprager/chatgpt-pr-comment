@@ -1,14 +1,44 @@
 import sys
+import openai
+import os
+
+from dotenv import load_dotenv, find_dotenv
+
+_ = load_dotenv(find_dotenv())  # read local .env file
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-def process_diff(base_content, head_content, diff, programming_language):
-    # This is where you would add your own logic.
-    # For now, we will just return the number of lines and the detected language.
-    base_lines = len(base_content.split("\n")) if base_content else 0
-    head_lines = len(head_content.split("\n")) if head_content else 0
-    diff_lines = len(diff.split("\n")) if diff else 0
+def get_completion(prompt, model="gpt-4"):
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=0,  # this is the degree of randomness of the model's output
+    )
+    return response.choices[0].message["content"]
 
-    return f"Base content has {base_lines} lines, head content has {head_lines} lines, diff has {diff_lines} lines. Detected language: {programming_language}."
+
+def ask_chatgpt(base_content, diff, programming_language):
+    prompt = f"""
+Your task as an experience ```{programming_language}``` programmer is to \ 
+review a pull request for this file with previous content as followed:
+---
+```{base_content}```
+---
+to which following diff file is supposed to be applied: 
+---
+```{diff}```
+---
+.
+Comment on code quality of this pull request, \
+any potential security risk \
+and make suggestions how the code could be improved if such suggestions exit. \
+Otherwise compliment the author on his code. \
+Limit to 300 words. 
+"""
+
+    return get_completion(prompt)
 
 
 if __name__ == "__main__":
@@ -17,5 +47,4 @@ if __name__ == "__main__":
     diff = sys.argv[3]
     programming_language = sys.argv[4]
 
-    print(process_diff(base_content, head_content, diff, programming_language))
-
+    print(ask_chatgpt(base_content, diff, programming_language))

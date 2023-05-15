@@ -1,0 +1,19 @@
+@startuml poc
+
+participant "PR Author" as author
+participant Github as github
+participant "Reviewbot GHA" as reviewbot
+participant "Reviewbot service" as service
+participant "ChatGPT API" as chatgpt
+
+author -> github : Create PR
+author -> reviewbot : /reviewbot review
+github -> reviewbot : send webhook payload
+reviewbot --> author : create 👀 reaction on comment
+reviewbot -> service : send git diff and PR context
+service -> chatgpt : create dynamic prompt and POST request
+chatgpt --> service : send code review suggestions
+service --> reviewbot : format and return response
+reviewbot --> github : post review with comments
+
+@enduml
