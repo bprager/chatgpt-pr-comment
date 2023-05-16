@@ -1,4 +1,4 @@
-ame: PR Diff Check
+name: PR Code Review Bot Pipeline
 
 on:
   pull_request:
