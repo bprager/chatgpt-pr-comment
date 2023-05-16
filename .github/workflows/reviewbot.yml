@@ -20,14 +20,6 @@ jobs:
           ref: ${{ github.head_ref }}
           path: head
 
-      - name: GET PR opposite
-        id: opposite
-        run: /
-          cd head
-          git fetch origin ${{ github.head_ref }}
-          FILES=$(git diff --name-only ${{ github.base_ref }} FETCH_HEAD)
-          echo "::set-output name=files::$FILES"
-
       - name: Get PR Diff
         id: diff
         run: |
