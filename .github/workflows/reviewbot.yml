@@ -65,12 +65,13 @@ jobs:
                     if (languages.hasOwnProperty(fileExtension)) { // check if source code
                         language = languages[fileExtension]
                         const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
+                        let result = "";
                         if (fileModified == true) {
                             const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
                             const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
                             console.log('+++ processing file modified for file: ' + `${file}`)
                             try {
-                              const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                              result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
                               console.log('result: ' + result); 
                             } catch (err) {
                               console.error('Error: ' + err.toString());
@@ -78,18 +79,18 @@ jobs:
                         } else { // file added
                             console.log('+++ processing file added for file: ' + `${file}`)
                             try {
-                              const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
+                              result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
                               console.log('result: ' + result); 
                             } catch (err) {
                               console.error('Error: ' + err.toString());
                             }
                         }
-                        console.log('+++ result: ' + `${result}`)
+                        console.log('+++ result: ' + result)
                         github.issues.createComment({
                             issue_number: `${context.issue.number}`,
                             owner: `{context.repo.owner}`,
                             repo: `{context.repo.repo}`,
-                            body: `Results for ${file}:\n\n${result}`
+                            body: `Results for ${file}:\n\n` + result
                         });
                         console.log('*** comments for ' + `${file}` + ' created.');
                     }
