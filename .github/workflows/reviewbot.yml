@@ -47,14 +47,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // only following file extensions are processed
-            languages = {'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++'}
+            const languages = {'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++'};
             const fs = require('fs');
             const { execSync } = require('child_process');
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             for (const file of files) {
               const fileExtension = file.split('.').pop();  // get file extension 
-              if fileExtension not in languages.keys():
-                next
+              if !(fileExtension in languages):
+                continue
               language = languages[fileExtension]
               const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
               const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
