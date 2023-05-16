@@ -1,4 +1,6 @@
 name: PR Code Review Bot Pipeline
+permissions:
+  issues: write
 
 on:
   pull_request:
