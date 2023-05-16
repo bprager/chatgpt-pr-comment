@@ -8,9 +8,6 @@ jobs:
   diff-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Python dependencies
-        uses: py-actions/py-dependency-install@v4
-
       - name: Checkout Base
         uses: actions/checkout@v2
         with:
@@ -28,6 +25,9 @@ jobs:
         run: |
           FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }})
           echo "::set-output name=files::$FILES"
+
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v4
 
       - name: Process Files and Comment
         uses: actions/github-script@v5
