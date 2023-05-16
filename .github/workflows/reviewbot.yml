@@ -67,9 +67,14 @@ jobs:
                         if (fileModified == true) {
                             const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
                             const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
-                            const result = execSync(`python3 chatgpt_agent.py ADDED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                            const pwd = execSync(`pwd`)
+                            console.log('*** pwd: ' + `${pwd}`);
+                            const ls = execSync(`ls`)
+                            console.log('*** ls: ' + `${ls}`);
+
+                            const result = execSync(`python3 chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
                         } else { // file added
-                            const result = execSync(`python3 chatgpt_agent.py MODIFIED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
+                            const result = execSync(`python3 chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
                         }
                         github.issues.createComment({
                             issue_number: context.issue.number,
