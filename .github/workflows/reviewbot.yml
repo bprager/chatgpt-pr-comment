@@ -65,5 +65,13 @@ jobs:
                   repo: context.repo.repo,
                   body: `Results for ${file}:\n\n${result}`
                 });
+              } else {
+                github.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `No comments for ${file}`
+
               }
+
             }
