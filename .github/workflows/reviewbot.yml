@@ -65,7 +65,8 @@ jobs:
                   repo: context.repo.repo,
                   body: `Results for ${file}:\n\n${result}`
                 });
+                console.log('comments for ' +  `${file}` + ' created.' );
               } else {
-                console.log('no comments for ' +  `${file}` );
+                console.log('no comments for ' +  `${file}` + ' created.' );
               } 
             }
