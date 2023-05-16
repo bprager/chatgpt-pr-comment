@@ -8,6 +8,9 @@ jobs:
   diff-check:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v4
+
       - name: Checkout Base
         uses: actions/checkout@v2
         with:
