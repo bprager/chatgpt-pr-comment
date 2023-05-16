@@ -35,6 +35,11 @@ jobs:
 
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v4
+        with:
+          path: /requirements.txt
+          update-pip: "false"
+          update-setuptools: "false"
+          update-wheel: "false"
 
       - name: Process Files and Comment
         uses: actions/github-script@v5
