@@ -28,6 +28,11 @@ jobs:
           FILES=$(git diff --name-only ${{ github.base_ref }} FETCH_HEAD)
           echo "::set-output name=files::$FILES"
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v4
 
