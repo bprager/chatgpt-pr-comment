@@ -20,9 +20,9 @@ def get_completion(prompt, model="gpt-4"):
 
 
 def ask_chatgpt(base_content, diff, programming_language):
-    prompt = f"""
+    prompt_modified = f"""
 Your task as an experience ```{programming_language}``` programmer is to \ 
-review a pull request for this file with previous content as followed:
+review a pull request for a source code file change with previous content as followed:
 ---
 ```{base_content}```
 ---
@@ -31,6 +31,19 @@ to which following diff file is supposed to be applied:
 ```{diff}```
 ---
 .
+"""
+
+    prompt_added = f"""
+Your task as an experience ```{programming_language}``` programmer is to \ 
+review a pull request for adding this file with following content:
+---
+```{content}```
+---
+.
+"""
+
+    prompt = prompt_modified if mode == "MODIFIED" else prompt_added
+    prompt += """
 Comment on code quality of this pull request, \
 any potential security risk \
 and make suggestions how the code could be improved if such suggestions exit. \
@@ -42,9 +55,9 @@ Limit to 300 words.
 
 
 if __name__ == "__main__":
-    base_content = sys.argv[1]
-    head_content = sys.argv[2]
+    mode = sys.argv[1]
+    content = sys.argv[2]
     diff = sys.argv[3]
     programming_language = sys.argv[4]
 
-    print(ask_chatgpt(base_content, diff, programming_language))
+    print(ask_chatgpt(content, diff, programming_language))
