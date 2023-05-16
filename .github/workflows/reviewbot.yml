@@ -24,8 +24,8 @@ jobs:
         id: opposite
         run: /
           cd head
-          git fetch origin ${{ github.base_ref }}
-          FILES=$(git diff --name-only ${{ github.head_ref }} FETCH_HEAD)
+          git fetch origin ${{ github.head_ref }}
+          FILES=$(git diff --name-only ${{ github.base_ref }} FETCH_HEAD)
           echo "::set-output name=files::$FILES"
 
       - name: Get PR Diff
