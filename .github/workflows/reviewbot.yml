@@ -66,6 +66,6 @@ jobs:
                   body: `Results for ${file}:\n\n${result}`
                 });
               } else {
-                console.log("no comments for ${file}")
+                console.log('no comments for ' +  ${file} )
               } 
             }
