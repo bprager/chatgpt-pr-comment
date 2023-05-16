@@ -8,6 +8,9 @@ jobs:
   diff-check:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v4
+
       - name: Checkout Base
         uses: actions/checkout@v2
         with:
@@ -26,22 +29,21 @@ jobs:
           FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }})
           echo "::set-output name=files::$FILES"
 
-      - name: Detect Programming Language
-        uses: aslafy-z/github-action-detect-language@master
-        id: detect-lang
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Process Files and Comment
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // only following file extensions are processed
+            languages = {'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++'}
             const fs = require('fs');
             const { execSync } = require('child_process');
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
-            const language = '${{ steps.detect-lang.outputs.language }}';
             for (const file of files) {
+              const fileExtension = file.split('.').pop();  // get file extension 
+              if fileExtension not in languages.keys():
+                next
+              language = languages[fileExtension]
               const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
               const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
               const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
