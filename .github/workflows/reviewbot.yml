@@ -63,7 +63,7 @@ jobs:
                     const fileModified = (fs.existsSync(`base/${file}`)) ? true : false // check if file is new
                     const fileExtension = file.split('.').pop();  // get file extension 
                     if (languages.hasOwnProperty(fileExtension)) { // check if source code
-                        language = languages[fileExtension]
+                        let language = languages[fileExtension]
                         const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
                         if (fileModified == true) {
                             const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
