@@ -20,6 +20,14 @@ jobs:
           ref: ${{ github.head_ref }}
           path: head
 
+      - name: GET PR opposite
+        id: opposite
+        run: /
+          cd head
+          git fetch origin ${{ github.base_ref }}
+          FILES=$(git diff --name-only ${{ github.head_ref }} FETCH_HEAD)
+          echo "::set-output name=files::$FILES"
+
       - name: Get PR Diff
         id: diff
         run: |
@@ -51,6 +59,8 @@ jobs:
             const languages = { 'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++' };
             const fs = require('fs');
             const { execSync } = require('child_process');
+            const opposite_files = '${{ steps.opposite.outputs.files }}'.split('\n');
+            console.log('*** opposite files: ' + `${opposite_files}`);
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             console.log('*** files: ' + `${files}`);
             for (const file of files) {
