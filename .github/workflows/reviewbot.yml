@@ -23,7 +23,9 @@ jobs:
       - name: Get PR Diff
         id: diff
         run: |
-          FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }})
+          cd base
+          git fetch origin ${{ github.head_ref }}
+          FILES=$(git diff --name-only ${{ github.base_ref }} FETCH_HEAD)
           echo "::set-output name=files::$FILES"
 
       - name: Install Python dependencies
