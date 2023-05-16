@@ -37,11 +37,12 @@ jobs:
         run: |
           pwd
           ls -al
+          ls head/
 
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v4
         with:
-          path: requirements.txt
+          path: head/requirements.txt
           update-pip: "false"
           update-setuptools: "false"
           update-wheel: "false"
