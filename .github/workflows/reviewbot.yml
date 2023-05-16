@@ -47,6 +47,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // only following file extensions are processed
+            const OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             const languages = { 'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++' };
             const fs = require('fs');
             const { execSync } = require('child_process');
@@ -67,9 +68,9 @@ jobs:
                         if (fileModified == true) {
                             const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
                             const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
-                            const result = execSync(`OPENAI_API_KEY='${secrets.OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                            const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
                         } else { // file added
-                            const result = execSync(`OPENAI_API_KEY='${secrets.OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
+                            const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
                         }
                         github.issues.createComment({
                             issue_number: context.issue.number,
