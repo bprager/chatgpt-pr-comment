@@ -53,7 +53,7 @@ jobs:
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             for (const file of files) {
               const fileExtension = file.split('.').pop();  // get file extension 
-              if !(fileExtension in languages):
+              if (!languages.hasOwnProperty(fileExtension)):
                 continue
               language = languages[fileExtension]
               const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
