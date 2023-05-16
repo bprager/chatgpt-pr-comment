@@ -51,8 +51,6 @@ jobs:
             const languages = { 'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++' };
             const fs = require('fs');
             const { execSync } = require('child_process');
-            const opposite_files = '${{ steps.opposite.outputs.files }}'.split('\n');
-            console.log('*** opposite files: ' + `${opposite_files}`);
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             console.log('*** files: ' + `${files}`);
             for (const file of files) {
@@ -70,13 +68,22 @@ jobs:
                         if (fileModified == true) {
                             const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
                             const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
-                            const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                            console.log('+++ processing file modified for file: ' + `${file}`)
+                            try {
+                              const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                              console.log('result: ' + result); 
+                            } catch (err) {
+                              console.error('Error: ' + err.toString());
+                            }
                         } else { // file added
-                            const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
+                            console.log('+++ processing file added for file: ' + `${file}`)
+                            try {
+                              const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
+                              console.log('result: ' + result); 
+                            } catch (err) {
+                              console.error('Error: ' + err.toString());
+                            }
                         }
-                        console.log('+++ contect.issue.number: ' + `${context.issue.number}`)
-                        console.log('+++ contect.repo.owner: ' + `${context.repo.owner}`)
-                        console.log('+++ contect.repo.repo: ' + `${context.repo.repo}`)
                         console.log('+++ result: ' + `${result}`)
                         github.issues.createComment({
                             issue_number: `${context.issue.number}`,
