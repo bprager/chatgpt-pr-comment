@@ -33,12 +33,6 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Check file location and content
-        run: |
-          pwd
-          ls -al
-          ls head/
-
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v4
         with:
@@ -48,7 +42,7 @@ jobs:
           update-wheel: "false"
 
       - name: Process Files and Comment
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
