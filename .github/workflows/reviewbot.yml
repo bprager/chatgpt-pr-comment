@@ -55,16 +55,16 @@ jobs:
             for (const file of files) {
                 if (fs.existsSync(`head/${file}`)) {  // check if file exists in head
                   console.log('*** processing file ' + `${file}` + '.');
-                  const fileAdded =  (fs.existsSync(`base/${file}`)) ? false : true // check if file is new
+                  const fileModified =  (fs.existsSync(`base/${file}`)) ? true : false // check if file is new
                   const fileExtension = file.split('.').pop();  // get file extension 
                   if (languages.hasOwnProperty(fileExtension)) { // check if source code
                     language = languages[fileExtension]
                     const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
-                    if !fileAdded {
+                    if (fileModified == true) {
                       const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
                       const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
                       const result = execSync(`python3 chatgpt_agent.py ADDED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
-                    } else {
+                    } else { // file added
                       const result = execSync(`python3 chatgpt_agent.py MODIFIED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
                     }
                     github.issues.createComment({
