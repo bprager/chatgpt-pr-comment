@@ -47,7 +47,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // only following file extensions are processed
-            const OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            const OPENAI_API_KEY=`${{ secrets.OPENAI_API_KEY }}`
             const languages = { 'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++' };
             const fs = require('fs');
             const { execSync } = require('child_process');
