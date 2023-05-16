@@ -47,27 +47,30 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // only following file extensions are processed
-            const languages = {'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++'};
+            const languages = { 'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++' };
             const fs = require('fs');
             const { execSync } = require('child_process');
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
+            console.log('*** files: ' + `${files}`);
             for (const file of files) {
-              console.log('processing file ' +  `${file}` + '.');
-              const fileExtension = file.split('.').pop();  // get file extension 
-              if (languages.hasOwnProperty(fileExtension)) {
-                language = languages[fileExtension]
-                const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
-                const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
-                const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
-                const result = execSync(`python3 chatgpt_agent.py '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
-                github.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: `Results for ${file}:\n\n${result}`
-                });
-                console.log('comments for ' +  `${file}` + ' created.' );
-              } else {
-                console.log('no comments for ' +  `${file}` + ' created.' );
-              } 
+                if (fs.existsSync(`head/${file}`)) {  // check if file exists in head
+                    console.log('*** processing file ' + `${file}` + '.');
+                    const fileExtension = file.split('.').pop();  // get file extension 
+                    if (languages.hasOwnProperty(fileExtension)) {
+                        language = languages[fileExtension]
+                        const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
+                        const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
+                        const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
+                        const result = execSync(`python3 chatgpt_agent.py '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                        github.issues.createComment({
+                            issue_number: context.issue.number,
+                            owner: context.repo.owner,
+                            repo: context.repo.repo,
+                            body: `Results for ${file}:\n\n${result}`
+                        });
+                        console.log('*** comments for ' + `${file}` + ' created.');
+                    }
+                } else {
+                    console.log('*** no comments for ' + `${file}` + ' created.');
+                }
             }
