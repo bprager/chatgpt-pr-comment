@@ -52,6 +52,7 @@ jobs:
             const { execSync } = require('child_process');
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             for (const file of files) {
+              console.log('processing file ' +  `${file}` + '.');
               const fileExtension = file.split('.').pop();  // get file extension 
               if (languages.hasOwnProperty(fileExtension)) {
                 language = languages[fileExtension]
