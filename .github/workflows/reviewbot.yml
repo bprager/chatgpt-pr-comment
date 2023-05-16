@@ -72,7 +72,6 @@ jobs:
                             console.log('+++ processing file modified for file: ' + `${file}`)
                             try {
                               result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
-                              console.log('result: ' + result); 
                             } catch (err) {
                               console.error('Error: ' + err.toString());
                             }
@@ -80,17 +79,16 @@ jobs:
                             console.log('+++ processing file added for file: ' + `${file}`)
                             try {
                               result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
-                              console.log('result: ' + result); 
                             } catch (err) {
                               console.error('Error: ' + err.toString());
                             }
                         }
                         console.log('+++ result: ' + result)
                         github.issues.createComment({
-                            issue_number: `${context.issue.number}`,
-                            owner: `{context.repo.owner}`,
-                            repo: `{context.repo.repo}`,
-                            body: `Results for ${file}:\n\n` + result
+                            issue_number: context.issue.number,
+                            owner: context.repo.owner,
+                            repo: context.repo.repo,
+                            body: 'Results for ' + file + ':\n\n'+ result
                         });
                         console.log('*** comments for ' + `${file}` + ' created.');
                     }
