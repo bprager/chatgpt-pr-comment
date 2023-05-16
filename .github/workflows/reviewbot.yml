@@ -79,6 +79,8 @@ jobs:
                             body: `Results for ${file}:\n\n${result}`
                         });
                         console.log('*** comments for ' + `${file}` + ' created.');
+                    } else {
+                        console.log('*** `${file}` + ' is not a source code file: no comment created.');
                     }
                 } else {
                     console.log('*** no comments for ' + `${file}` + ' created.');
