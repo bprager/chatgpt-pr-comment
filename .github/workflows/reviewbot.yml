@@ -53,7 +53,7 @@ jobs:
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             console.log('*** files: ' + `${files}`);
             for (const file of files) {
-                const headExists = fs.existsSync(`head/${file}`) ? true : false;
+                const headExist = fs.existsSync(`head/${file}`) ? true : false;
                 console.log('*** ' + `${file}` + ' exist in head is: ' + `${headExist}`)
                 const baseExist = fs.existsSync(`base/${file}`) ? true : false;
                 console.log('*** ' + `${file}` + ' exist in base is: ' + `${baseExist}`)
