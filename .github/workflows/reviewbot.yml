@@ -72,10 +72,14 @@ jobs:
                         } else { // file added
                             const result = execSync(`OPENAI_API_KEY='${OPENAI_API_KEY}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
                         }
+                        console.log('+++ contect.issue.number: ' + `${context.issue.number}`)
+                        console.log('+++ contect.repo.owner: ' + `${context.repo.owner}`)
+                        console.log('+++ contect.repo.repo: ' + `${context.repo.repo}`)
+                        console.log('+++ result: ' + `${result}`)
                         github.issues.createComment({
-                            issue_number: context.issue.number,
-                            owner: context.repo.owner,
-                            repo: context.repo.repo,
+                            issue_number: `${context.issue.number}`,
+                            owner: `{context.repo.owner}`,
+                            repo: `{context.repo.repo}`,
                             body: `Results for ${file}:\n\n${result}`
                         });
                         console.log('*** comments for ' + `${file}` + ' created.');
