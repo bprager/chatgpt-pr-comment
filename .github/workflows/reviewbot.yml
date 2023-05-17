@@ -47,10 +47,6 @@ jobs:
           update-setuptools: "false"
           update-wheel: "false"
 
-      - uses: mshick/add-pr-comment@v2
-        with:
-          message: "This is a comment on the pull request."
-
       - name: Process Files and Comment
         id: chatgpt
         uses: actions/github-script@v6
@@ -92,7 +88,7 @@ jobs:
                           issue_number: context.issue.number,
                           owner: context.repo.owner,
                           repo: context.repo.repo,
-                          body: `Results for ${file}:\n\n${result}`
+                          body: `ChatGPT code comment on file: ${file}:\n\n${result}`
             });
                         console.log('*** comments for ' + `${file}` + ' created.');
                     }
