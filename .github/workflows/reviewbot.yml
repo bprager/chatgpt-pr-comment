@@ -61,8 +61,6 @@ jobs:
             const files = '${{ steps.diff.outputs.files }}'.split('\n');
             const comments = [];
 
-            const { numberChanged, repo: { owner, repo } } = context.issue;
-
             for (const file of files) {
                 const headFilePath = `head/${file}`;
                 const baseFilePath = `base/${file}`;
@@ -106,6 +104,14 @@ jobs:
                         }
 
                         console.log(`+++ result: ${result}`);
+
+                        await github.rest.issues.createComment({
+                          issue_number: context.issue.number,
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          body: `Results for ${file}:\n\n${result}`
+                        });
+
                         console.log(`*** comments for ${file} created.`);
 
                         comments.push(`ChatGPT code comment on file: ${file}:\n\n${result}`);
@@ -114,10 +120,3 @@ jobs:
                     console.log(`*** no comments for ${file} created.`);
                 }
             }
-
-            await github.rest.issues.createComment({
-                issue_number: numberChanged,
-                owner,
-                repo,
-                body: comments.join('\n')
-            });
