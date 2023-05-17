@@ -10,6 +10,9 @@ on:
 jobs:
   diff-check:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout Base
         uses: actions/checkout@v3
@@ -47,3 +50,53 @@ jobs:
       - uses: mshick/add-pr-comment@v2
         with:
           message: "This is a comment on the pull request."
+
+      - name: Process Files and Comment
+        id: chatgpt
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // only following file extensions are processed 
+            const languages = { 'py': 'Python', 'java': 'Java', 'js': 'JavaScript', 'cpp': 'C++' };
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+            const files = '${{ steps.diff.outputs.files }}'.split('\n');
+            for (const file of files) {
+                if (fs.existsSync(`head/${file}`)) {  // check if file exists in head
+                    console.log('+++ processing file ' + `${file}` + '.');
+                    const fileModified = (fs.existsSync(`base/${file}`)) ? true : false // check if file is new
+                    const fileExtension = file.split('.').pop();  // get file extension 
+                    if (languages.hasOwnProperty(fileExtension)) { // check if source code
+                        language = languages[fileExtension]
+                        const headContent = fs.existsSync(`head/${file}`) ? fs.readFileSync(`head/${file}`, 'utf8') : '';
+                        let result = "";
+                        if (fileModified == true) {
+                            const baseContent = fs.existsSync(`base/${file}`) ? fs.readFileSync(`base/${file}`, 'utf8') : '';
+                            const diff = execSync(`diff -u base/${file} head/${file}`, { encoding: 'utf8' });
+                            try {
+                              result = execSync(`OPENAI_API_KEY='${{ secrets.OPENAI_API_KEY }}' python3 head/chatgpt_agent.py MODIFIED '${baseContent}' '${diff}' '${language}'`, { encoding: 'utf8' });
+                            } catch (err) {
+                                console.error('Error: ' + err.toString());
+                            }
+                        } else { // file added
+                            try {
+                              result = execSync(`OPENAI_API_KEY='${{ secrets.OPENAI_API_KEY }}' python3 head/chatgpt_agent.py ADDED '${headContent}' '' '${language}'`, { encoding: 'utf8' });
+                            } catch (err) {
+                                console.error('Error: ' + err.toString());
+                            }
+                        }
+                        console.log('+++ result: ' + result)
+                        console.log(`::set-output name=result::${result}`);
+                        await github.rest.issues.createComment({
+                          issue_number: context.issue.number,
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          body: `Results for ${file}:\n\n${result}`
+            });
+                        console.log('*** comments for ' + `${file}` + ' created.');
+                    }
+                } else {
+                    console.log('*** no comments for ' + `${file}` + ' created.');
+                }
+            }
