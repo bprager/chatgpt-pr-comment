@@ -8,7 +8,9 @@ import sys
 # setup logger
 logger = logging.getLogger(__name__)
 stoh = logging.StreamHandler(sys.stderr)
-fmth = logging.Formatter("[%(levelname)s] %(asctime)s %(message)s")
+fmth = logging.Formatter(
+    "%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
+)
 stoh.setFormatter(fmth)
 logger.addHandler(stoh)
 logger.setLevel(logging.DEBUG)
