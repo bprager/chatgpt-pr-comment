@@ -13,7 +13,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # model="da-vinci-codex"
 
 
-def get_completion(prompt, model="gpt-4"):
+def get_completion(prompt, model="gpt-3.5-turbo"):
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
         model=model,
