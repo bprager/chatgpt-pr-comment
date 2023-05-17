@@ -4,9 +4,17 @@
 #
 import logging
 
+# setup logger
+logger = logging.getLogger(__name__)
+stoh = logging.StreamHandler(sys.stderr)
+fmth = logging.Formatter("[%(levelname)s] %(asctime)s %(message)s")
+stoh.setFormatter(fmth)
+logger.addHandler(stoh)
+logger.setLevel(logging.DEBUG)
+
 
 def main():
-    logging.info("Hello World!")
+    logger.info("Hello World!")
 
 
 if __name__ == "__main__":
