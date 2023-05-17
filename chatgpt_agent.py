@@ -9,9 +9,11 @@ _ = load_dotenv(find_dotenv())  # read local .env file
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # model="gpt-4"
+# model="gpt-3.5-turbo"
+# model="da-vinci-codex"
 
 
-def get_completion(prompt, model="gpt-3.5-turbo"):
+def get_completion(prompt, model="gpt-4"):
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
         model=model,
@@ -32,7 +34,7 @@ to which following diff file is supposed to be applied:
 ---
 ```{diff}```
 ---
-.
+. Focus on the changes made by the diff file.
 """
 
     prompt_added = f"""
@@ -46,9 +48,9 @@ review a pull request for adding this file with following content:
 
     prompt = prompt_modified if mode == "MODIFIED" else prompt_added
     prompt += """
-Comment on code quality of this pull request, \
-any potential security risk \
-and make suggestions how the code could be improved if such suggestions exit. \
+Comment next on code quality of this pull request, \
+any potential security risk if they exist. \
+Make suggestions how the code could be improved if there are any. \
 Otherwise compliment the author on his code. \
 Limit to 300 words. 
 """
