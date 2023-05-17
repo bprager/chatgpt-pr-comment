@@ -42,7 +42,7 @@ jobs:
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v4
         with:
-          path: head/requirements.txt
+          path: base/requirements.txt
           update-pip: "false"
           update-setuptools: "false"
           update-wheel: "false"
