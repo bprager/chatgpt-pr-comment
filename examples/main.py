@@ -17,7 +17,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def main():
-    logger.info("Hello World!")
+    logger.info("Changed Hello World!")
 
 
 if __name__ == "__main__":
