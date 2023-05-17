@@ -3,6 +3,7 @@
 # vim:fenc=utf-8
 #
 import logging
+import sys
 
 # setup logger
 logger = logging.getLogger(__name__)
