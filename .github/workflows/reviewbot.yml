@@ -44,6 +44,7 @@ jobs:
           update-wheel: "false"
 
       - name: Process Files and Comment
+        id: chatgpt
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -85,16 +86,14 @@ jobs:
                                 console.error('Error: ' + err.toString());
                             }
                         }
-                        console.log('+++ result: ' + result)
-                        await github.rest.issues.createComment({
-                          issue_number: context.issue.number,
-                          owner: context.repo.owner,
-                          repo: context.repo.repo,
-                          body: `Results for ${file}:\n\n${result}`
-                        });
-                        console.log('*** comments for ' + `${file}` + ' created.');
+                        console.log(`::set-output name=result::${result}`);
                     }
-                } else {
-                    console.log('*** no comments for ' + `${file}` + ' created.');
                 }
             }
+
+      - name: Create PR Comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: context.issue.number,
+          body: |
+            ${{ steps.chatgpt.outputs.result }}
