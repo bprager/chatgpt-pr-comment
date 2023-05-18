@@ -1,8 +1,7 @@
 name: File Changes Analysis
 on:
   pull_request:
-    types:
-      - synchronize
+    types: [opened, synchronize, reopened]
 
 jobs:
   analyze_changes:
