@@ -1,0 +1,53 @@
+name: File Changes Analysis
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  analyze_changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get changed files
+        id: changed_files
+        run: |
+          echo "added=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }})" >> $GITHUB_OUTPUT
+          echo "modified=$(git diff --name-only --diff-filter=M ${{ github.base_ref }}...${{ github.head_ref }})" >> $GITHUB_OUTPUT
+          echo "deleted=$(git diff --name-only --diff-filter=D ${{ github.base_ref }}...${{ github.head_ref }})" >> $GITHUB_OUTPUT
+
+      - name: Analyze changes
+        id: analyze
+        run: |
+          added_files="${{ steps.changed_files.outputs.added }}"
+          modified_files="${{ steps.changed_files.outputs.modified }}"
+          deleted_files="${{ steps.changed_files.outputs.deleted }}"
+
+          for file in $added_files; do
+            echo "File added: $file"
+            echo "File content:"
+            cat "$file"
+            echo
+          done
+
+          for file in $modified_files; do
+            echo "File modified: $file"
+            echo "Old file content:"
+            git show "${{ github.base_ref }}:$file"
+            echo
+            echo "New file content:"
+            cat "$file"
+            echo
+            echo "Diff:"
+            git diff "${{ github.base_ref }}:$file" "$file"
+            echo
+          done
+
+          for file in $deleted_files; do
+            echo "File deleted: $file"
+            echo "Content: Nothing"
+            echo
+          done
