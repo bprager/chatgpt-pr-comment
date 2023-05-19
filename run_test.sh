@@ -18,7 +18,7 @@ fi
 git pull
 git rm examples/main.py
 git add .
-git commit -m "$1"
+git commit -m "\"$1\""
 git br -D example_branch
 git co -b example_branch
 cat example/main.py << EOF
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     main()
 EOF
 git add .
-git commit "test after $1"
+git commit -m "\"test after $1\""
 git push --set-upstream origin example_branch
 git co main
 echo "Now start the pull request and observe the Github Action ..."
