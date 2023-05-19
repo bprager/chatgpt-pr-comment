@@ -16,7 +16,8 @@ def analyze_file(file):
 
 
 if __name__ == "__main__":
-    files = json.loads(sys.argv[1])
+    files_json = sys.argv[1]
+    files = json.loads(files_json.replace("'", '"'))
 
     for file in files:
         analyze_file(file)
