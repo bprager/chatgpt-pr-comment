@@ -43,6 +43,7 @@ jobs:
               echo "File content:"
               cat "$file"
               echo
+              ls -l chatgpt_agent.py
               python chatgpt_agent.py  --file "$file" --content "$(cat "$file")"
             elif [[ $status == "modified" ]]; then
               echo "File modified: $file"
