@@ -78,7 +78,6 @@ def main():
 
     languages = {".py": "Python", ".java": "Java", ".cpp": "C++", ".js": "JavaScript"}
     _, extension = os.path.splitext(filename)
-    print(f"extension: {extension}")
 
     if extension in languages:
         if content is None:

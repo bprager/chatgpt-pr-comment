@@ -43,10 +43,10 @@ jobs:
             
             if [[ $status == "added" ]]; then
               echo "File added: $file"
-              # echo "File content:"
-              # cat "$file"
+              echo "File content:"
+              cat "$file"
               echo
-              python chatgpt_agent.py --file "$file" >> $GITHUB_OUTPUT
+              python chatgpt_agent.py --file "$file" > $GITHUB_OUTPUT
             elif [[ $status == "modified" ]]; then
               echo "File modified: $file"
               echo "Old file content:"
@@ -57,7 +57,7 @@ jobs:
               echo
               echo "Diff:"
               git diff "HEAD:${file}" "$file"
-              python ./chatgpt_agent.py --file "$file" --old-file "/tmp/old_file" >> $GITHUB_OUTPUT
+              python ./chatgpt_agent.py --file "$file" --old-file "/tmp/old_file" > $GITHUB_OUTPUT
             elif [[ $status == "deleted" ]]; then
               echo "File deleted: $file"
               echo "Content: Nothing"
