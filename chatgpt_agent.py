@@ -1,9 +1,20 @@
-import sys
 import argparse
-import openai
+import logging
 import os
+import sys
 
-from dotenv import load_dotenv, find_dotenv
+import openai
+from dotenv import find_dotenv, load_dotenv
+
+# setup logger
+logger = logging.getLogger(__name__)
+stoh = logging.StreamHandler(sys.stdout)
+fmth = logging.Formatter(
+    "%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
+)
+stoh.setFormatter(fmth)
+logger.addHandler(stoh)
+logger.setLevel(logging.DEBUG)
 
 _ = load_dotenv(find_dotenv())  # read local .env file
 
@@ -60,6 +71,7 @@ Limit to 300 words.
 
 
 def main():
+    logging.debug("Starting chatgpt_agent.py")
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="File name")
     parser.add_argument("--content", help="File content")
