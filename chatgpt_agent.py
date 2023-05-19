@@ -62,24 +62,27 @@ Limit to 300 words.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="File name")
-    parser.add_argument("--content", help="File content")
-    parser.add_argument("--old-content", help="Old file content")
-    parser.add_argument("--new-content", help="New file content")
+    parser.add_argument("--old-file", help="Old file content")
+    parser.add_argument("--diff-file", help="Old file content")
     args = parser.parse_args()
 
     filename = args.file
-    content = args.content
-    old_content = args.old_content
-    new_content = args.new_content
+    with open(filename, "r") as f:
+        content = f.read()
+    if args.diff_file:
+        with open(args.diff_file, "r") as f:
+            diff = f.read()
+    if args.old_file:
+        with open(args.old_file, "r") as f:
+            old_content = f.read()
+
     languages = {".py": "Python", ".java": "Java", ".cpp": "C++", ".js": "JavaScript"}
     _, extension = os.path.splitext(filename)
     print(f"extension: {extension}")
 
     if extension in languages:
         if content is None:
-            print(
-                ask_chatgpt("MODIFIED", old_content, new_content, languages[extension])
-            )
+            print(ask_chatgpt("MODIFIED", old_content, content, languages[extension]))
         else:
             print(ask_chatgpt("ADDED", "", content, languages[extension]))
 

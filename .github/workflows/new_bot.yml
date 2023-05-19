@@ -46,18 +46,18 @@ jobs:
               # echo "File content:"
               # cat "$file"
               echo
-              python chatgpt_agent.py  --file "$file" --content "$(cat $file)" >> $GITHUB_OUTPUT
+              python chatgpt_agent.py --file "$file" >> $GITHUB_OUTPUT
             elif [[ $status == "modified" ]]; then
               echo "File modified: $file"
               echo "Old file content:"
-              git show "HEAD:${file}"
+              git show "HEAD:${file}" > /tmp/old_file
               echo
               echo "New file content:"
               cat "$file"
               echo
               echo "Diff:"
               git diff "HEAD:${file}" "$file"
-              python ./chatgpt_agent.py --file "$file" --old-content "$(git show "HEAD:${file}")" --new-content "$(cat $file)" >> $GITHUB_OUTPUT
+              python ./chatgpt_agent.py --file "$file" --old-file "/tmp/old_file" >> $GITHUB_OUTPUT
             elif [[ $status == "deleted" ]]; then
               echo "File deleted: $file"
               echo "Content: Nothing"
