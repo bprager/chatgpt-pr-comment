@@ -47,13 +47,13 @@ jobs:
             elif [[ $status == "modified" ]]; then
               echo "File modified: $file"
               echo "Old file content:"
-              git show "${{ github.base_ref }}:$file"
+              git show "HEAD:${file}"
               echo
               echo "New file content:"
               cat "$file"
               echo
               echo "Diff:"
-              git diff "${{ github.base_ref }}:$file" "$file"
+              git diff "HEAD:${file}" "$file"
               echo
             elif [[ $status == "deleted" ]]; then
               echo "File deleted: $file"
