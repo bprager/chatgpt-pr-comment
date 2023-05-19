@@ -29,28 +29,31 @@ jobs:
 
           # Get the pull request information
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          PR_BRANCH=$(jq --raw-output .pull_request.base.ref "$GITHUB_EVENT_PATH")
+          PR_BASE_BRANCH=$(jq --raw-output .pull_request.base.ref "$GITHUB_EVENT_PATH")
+
+          # Fetch the base branch
+          git fetch origin $PR_BASE_BRANCH:$PR_BASE_BRANCH
 
           # Get the files changed in the pull request
-          CHANGED_FILES=$(git diff --name-only origin/$PR_BRANCH...HEAD)
+          CHANGED_FILES=$(git diff --name-only $PR_BASE_BRANCH)
 
           # Prepare an array to store file paths
           FILES=()
 
           # Process each changed file
           for FILE in $CHANGED_FILES; do
-            if [[ -f $FILE ]]; then
+          if [[ -f $FILE ]]; then
               if [[ $(git log --follow --format=format: -- "$FILE" | wc -l) -gt 0 ]]; then
-                # File was changed, get old content and diff
-                OLD_CONTENT=$(git show origin/$PR_BRANCH:"$FILE")
-                DIFF=$(git diff origin/$PR_BRANCH "$FILE")
-                FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
+              # File was changed, get old content and diff
+              OLD_CONTENT=$(git show $PR_BASE_BRANCH:"$FILE")
+              DIFF=$(git diff $PR_BASE_BRANCH "$FILE")
+              FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
               else
-                # File was added, get file name and content
-                CONTENT=$(cat "$FILE")
-                FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
+              # File was added, get file name and content
+              CONTENT=$(cat "$FILE")
+              FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
-            fi
+          fi
           done
 
           echo "::set-output name=files::$(echo ${FILES[*]})"
