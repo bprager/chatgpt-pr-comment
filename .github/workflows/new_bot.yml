@@ -43,7 +43,7 @@ jobs:
               echo "File content:"
               cat "$file"
               echo
-              python3 chatgpt_agent.py "ADDED" "$file" "$(cat "$file")"
+              python chatgpt_agent.py  --file "$file" --content "$(cat "$file")"
             elif [[ $status == "modified" ]]; then
               echo "File modified: $file"
               echo "Old file content:"
@@ -55,6 +55,7 @@ jobs:
               echo "Diff:"
               git diff "HEAD:${file}" "$file"
               echo
+              python analyze_file.py --file "$file" --old-content "$(git show "HEAD:${file}")" --new-content "$(cat "$file")"
             elif [[ $status == "deleted" ]]; then
               echo "File deleted: $file"
               echo "Content: Nothing"

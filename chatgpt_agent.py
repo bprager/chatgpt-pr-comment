@@ -1,4 +1,5 @@
 import sys
+import argparse
 import openai
 import os
 
@@ -23,25 +24,25 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     return response.choices[0].message["content"]
 
 
-def ask_chatgpt(base_content, diff, programming_language):
+def ask_chatgpt(mode, old_content, new_content, programming_language):
     prompt_modified = f"""
 Your task as an experience ```{programming_language}``` programmer is to \ 
-review a pull request for a source code file change with previous content as followed:
+review a pull request to replace following code:
 ---
-```{base_content}```
+```{old_content}```
 ---
-to which following diff file is supposed to be applied: 
+which following new code:
 ---
-```{diff}```
+```{new_content}```
 ---
 . Focus on the changes made by the diff file.
 """
 
     prompt_added = f"""
 Your task as an experience ```{programming_language}``` programmer is to \ 
-review a pull request for adding this file with following content:
+review a pull request for adding this source code:
 ---
-```{content}```
+```{new_content}```
 ---
 .
 """
@@ -58,13 +59,28 @@ Limit to 300 words.
     return get_completion(prompt)
 
 
-if __name__ == "__main__":
-    mode = sys.argv[1]
-    filename = sys.argv[2]
-    content = sys.argv[3]
-    diff = sys.argv[4]
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file", help="File name")
+    parser.add_argument("--content", help="File content")
+    parser.add_argument("--old-content", help="Old file content")
+    parser.add_argument("--new-content", help="New file content")
+    args = parser.parse_args()
+
+    filename = args.file
+    content = args.content
+    old_content = args.old_content
+    new_content = args.new_content
     languages = {"py": "Python", "java": "Java", "cpp": "C++", "js": "JavaScript"}
-    name, extension = os.path.splitext(filename)
+    _, extension = os.path.splitext(filename)
 
     if extension in languages:
-        print(ask_chatgpt(content, diff, languages[extension]))
+        if content is None:
+            mode = "MODIFIED"
+            print(ask_chatgpt(mode, old_content, new_content, languages[extension]))
+        else:
+            print(ask_chatgpt(mode, "", content, languages[extension]))
+
+
+if __name__ == "__main__":
+    main()
