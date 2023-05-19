@@ -77,6 +77,7 @@ Limit to 300 words.
 
 
 def main():
+    print("Starting chatgpt_agent.py")
     log.debug("Starting chatgpt_agent.py")
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="File name")
