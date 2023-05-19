@@ -1,22 +1,8 @@
 import argparse
-import logging
 import os
-import sys
 
 import openai
 from dotenv import find_dotenv, load_dotenv
-
-# setup logger
-FORMATTER = logging.Formatter(
-    "%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
-)
-
-log = logging.getLogger(__name__)
-console_handler = logging.StreamHandler(sys.stderr)
-console_handler.setFormatter(FORMATTER)
-log.addHandler(console_handler)
-# log.setLevel(logging.INFO)
-log.propagate = False
 
 _ = load_dotenv(find_dotenv())  # read local .env file
 
@@ -35,9 +21,6 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
         temperature=0,  # this is the degree of randomness of the model's output
     )
     response = response.choices[0].message["content"]
-    log.debug(f"response: {response}")
-    print(f"response: {response}")
-    return response
 
 
 def ask_chatgpt(mode, old_content, new_content, programming_language):
@@ -77,7 +60,6 @@ Limit to 300 words.
 
 
 def main():
-    log.debug("Starting chatgpt_agent.py")
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="File name")
     parser.add_argument("--content", help="File content")
