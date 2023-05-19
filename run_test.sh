@@ -21,6 +21,7 @@ git add .
 git commit -m "\"$1\""
 git br -D example_branch
 git co -b example_branch
+touch example/main.py
 cat example/main.py << EOF
 # /usr/bin/env python3
 # -*- coding: utf-8 -*-
