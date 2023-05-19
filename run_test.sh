@@ -31,9 +31,9 @@ git br -D example_branch
 git co -b example_branch
 
 # create test file
-mkdir -p example
-touch example/main.py
-cat example/main.py << EOF
+mkdir -p examples
+touch examples/main.py
+cat examples/main.py << EOF
 # /usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim:fenc=utf-8
