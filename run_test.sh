@@ -1,14 +1,13 @@
 #!/usr/bin/env/bash
-
+set -x
 # Check for a single argument
 if [ $# -lt 1 ]; then
   echo "Error: Missing commit message. Exiting ..."
   exit 1
 fi
 
-prlist=$(gh pr list)
-
-if grep -q "no open pull requests" <<< "$output"; then
+# (note: requires sudo apt install expect)
+if unbuffer gh pr list | grep -q 'no open pull requests'; then
 echo "There are no open pull requests"
 else
 echo "There are open pull requests. Merge first. Exiting ..."
@@ -18,7 +17,7 @@ fi
 # run the test
 git pull
 git rm examples/main.py
-git add
+git add .
 git commit -m "$1"
 git br -D example_branch
 git co -b example_branch
