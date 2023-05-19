@@ -7,14 +7,16 @@ import openai
 from dotenv import find_dotenv, load_dotenv
 
 # setup logger
-logger = logging.getLogger(__name__)
-stoh = logging.StreamHandler(sys.stdout)
-fmth = logging.Formatter(
+FORMATTER = logging.Formatter(
     "%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
 )
-stoh.setFormatter(fmth)
-logger.addHandler(stoh)
-logger.setLevel(logging.DEBUG)
+
+log = logging.getLogger(__name__)
+console_handler = logging.StreamHandler(sys.stderr)
+console_handler.setFormatter(FORMATTER)
+log.addHandler(console_handler)
+# log.setLevel(logging.INFO)
+log.propagate = False
 
 _ = load_dotenv(find_dotenv())  # read local .env file
 
@@ -32,10 +34,14 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
         messages=messages,
         temperature=0,  # this is the degree of randomness of the model's output
     )
-    return response.choices[0].message["content"]
+    response = response.choices[0].message["content"]
+    log.debug(f"response: {response}")
+    print(f"response: {response}")
+    return response
 
 
 def ask_chatgpt(mode, old_content, new_content, programming_language):
+    print("askchatgpt")
     prompt_modified = f"""
 Your task as an experience ```{programming_language}``` programmer is to \ 
 review a pull request to replace following code:
@@ -71,7 +77,7 @@ Limit to 300 words.
 
 
 def main():
-    logging.debug("Starting chatgpt_agent.py")
+    log.debug("Starting chatgpt_agent.py")
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="File name")
     parser.add_argument("--content", help="File content")
@@ -83,15 +89,17 @@ def main():
     content = args.content
     old_content = args.old_content
     new_content = args.new_content
-    languages = {"py": "Python", "java": "Java", "cpp": "C++", "js": "JavaScript"}
+    languages = {".py": "Python", ".java": "Java", ".cpp": "C++", ".js": "JavaScript"}
     _, extension = os.path.splitext(filename)
+    print(f"extension: {extension}")
 
     if extension in languages:
         if content is None:
-            mode = "MODIFIED"
-            print(ask_chatgpt(mode, old_content, new_content, languages[extension]))
+            print(
+                ask_chatgpt("MODIFIED", old_content, new_content, languages[extension])
+            )
         else:
-            print(ask_chatgpt(mode, "", content, languages[extension]))
+            print(ask_chatgpt("ADDED", "", content, languages[extension]))
 
 
 if __name__ == "__main__":
