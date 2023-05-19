@@ -60,8 +60,11 @@ Limit to 300 words.
 
 if __name__ == "__main__":
     mode = sys.argv[1]
-    content = sys.argv[2]
-    diff = sys.argv[3]
-    programming_language = sys.argv[4]
+    filename = sys.argv[2]
+    content = sys.argv[3]
+    diff = sys.argv[4]
+    languages = {"py": "Python", "java": "Java", "cpp": "C++", "js": "JavaScript"}
+    name, extension = os.path.splitext(filename)
 
-    print(ask_chatgpt(content, diff, programming_language))
+    if extension in languages:
+        print(ask_chatgpt(content, diff, languages[extension]))
