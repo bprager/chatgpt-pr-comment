@@ -22,9 +22,10 @@ if test -f "examples/main.py"; then
   git rm examples/main.py
 fi
 
-# add any changes
+# add any changes and push
 git add .
 git commit -m "\"$1\""
+git push
 
 # delete test branch, recreate it and switch to i
 git br -D example_branch
