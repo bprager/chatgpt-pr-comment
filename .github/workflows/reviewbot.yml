@@ -51,12 +51,15 @@ jobs:
               else
               # File was added, get file name and content
               CONTENT=$(cat "$FILE")
+              echo "+++test"
+              echo "file: $FILE"
+              echo "content: $CONTENT"
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
           fi
           done
 
-          echo "::set-output name=files::$(echo ${FILES[*]})"
+          echo "name=$(echo ${FILES[*]})" >> $GITHUB_OUTPUT
 
       - name: Run Python Script
         run: |
