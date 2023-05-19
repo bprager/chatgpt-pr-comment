@@ -55,7 +55,7 @@ jobs:
               echo "Diff:"
               git diff "HEAD:${file}" "$file"
               echo
-              python analyze_file.py --file "$file" --old-content "$(git show "HEAD:${file}")" --new-content "$(cat "$file")"
+              python chatgpt_agent.py --file "$file" --old-content "$(git show "HEAD:${file}")" --new-content "$(cat "$file")"
             elif [[ $status == "deleted" ]]; then
               echo "File deleted: $file"
               echo "Content: Nothing"
