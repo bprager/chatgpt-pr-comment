@@ -29,10 +29,10 @@ jobs:
 
           # Get the pull request information
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          PR_BRANCH=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+          PR_BRANCH=$(jq --raw-output .pull_request.base.ref "$GITHUB_EVENT_PATH")
 
           # Get the files changed in the pull request
-          CHANGED_FILES=$(git diff --name-only HEAD~1)
+          CHANGED_FILES=$(git diff --name-only origin/$PR_BRANCH...HEAD)
 
           # Prepare an array to store file paths
           FILES=()
@@ -42,8 +42,8 @@ jobs:
             if [[ -f $FILE ]]; then
               if [[ $(git log --follow --format=format: -- "$FILE" | wc -l) -gt 0 ]]; then
                 # File was changed, get old content and diff
-                OLD_CONTENT=$(git show HEAD~1:"$FILE")
-                DIFF=$(git diff HEAD~1 "$FILE")
+                OLD_CONTENT=$(git show origin/$PR_BRANCH:"$FILE")
+                DIFF=$(git diff origin/$PR_BRANCH "$FILE")
                 FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
               else
                 # File was added, get file name and content
