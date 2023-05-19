@@ -34,18 +34,7 @@ git co -b example_branch
 mkdir -p examples
 touch examples/main.py
 cat examples/main.py << EOF
-# /usr/bin/env python3
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-#
-import sys
-
-def main():
-    print("Hello World!")
-
-
-if __name__ == "__main__":
-    main()
+print("Hello world!")
 EOF
 
 # commit and push
