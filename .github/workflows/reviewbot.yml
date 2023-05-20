@@ -51,6 +51,7 @@ jobs:
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
               else
               # File was added, get file name and content
+              cat $FILE
               CONTENT=$(cat "$FILE")
               echo "+++test"
               echo "file: $FILE"
