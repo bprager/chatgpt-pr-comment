@@ -31,7 +31,7 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     # Process diff files
     print("Diff files:", diff_files)
     for diff_file in diff_files:
-        if not file:
+        if not diff_file:
             continue
         with open(os.path.join(temp_dir, diff_file), "r") as file:
             diff_content = file.read()
