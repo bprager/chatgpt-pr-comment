@@ -85,4 +85,4 @@ jobs:
 
       - name: Run Python Script
         run: |
-          python analyze.py "${{ steps.process_files.outputs.added_files }}" "${{ steps.process_files.outputs.modified_files }}" "${{ steps.process_files.outputs.diff_files }}"
+          python analyze.py "${{ steps.process_files.outputs.temp_dir }}" "${{ steps.process_files.outputs.added_files }}" "${{ steps.process_files.outputs.modified_files }}" "${{ steps.process_files.outputs.diff_files }}"

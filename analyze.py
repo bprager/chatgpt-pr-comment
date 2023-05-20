@@ -33,12 +33,13 @@ def analyze_files(added_files, modified_files=[], diff_files=[]):
 
 
 if __name__ == "__main__":
-    added_files = sys.argv[1].split(",")
+    temp_dir = sys.argv[1]
+    added_files = sys.argv[2].split(",")
     modified_files = []
     diff_files = []
-    if len(sys.argv) > 1:
-        modified_files = sys.argv[2].split(",")
     if len(sys.argv) > 2:
+        modified_files = sys.argv[2].split(",")
+    if len(sys.argv) > 3:
         diff_files = sys.argv[3].split(",")
 
-    analyze_files(added_files, modified_files, diff_files)
+    analyze_files(temp_dir, added_files, modified_files, diff_files)
