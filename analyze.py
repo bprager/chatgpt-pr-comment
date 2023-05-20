@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 
@@ -13,6 +14,8 @@ def analyze_diff(diff):
 
 def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     # Process added files
+    if not added_files:
+        added_files = []
     print("Added files:", added_files)
     for file in added_files:
         file_path = os.path.join(temp_dir, file)
@@ -23,6 +26,8 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
         ):
             analyze_file(file_path)
 
+    if not modified_files:
+        modified_files = []
     # Process modified files
     print("Modified files:", modified_files)
     for file in modified_files:
@@ -35,6 +40,8 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
             analyze_file(file_path)
 
     # Process diff files
+    if not diff_files:
+        diff_files = []
     print("Diff files:", diff_files)
     for diff_file in diff_files:
         diff_file_path = os.path.join(temp_dir, diff_file)
@@ -49,13 +56,15 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
 
 
 if __name__ == "__main__":
-    temp_dir = sys.argv[1]
-    added_files = sys.argv[2].split(",")
-    modified_files = []
-    diff_files = []
-    if len(sys.argv) > 2:
-        modified_files = sys.argv[2].split(",")
-    if len(sys.argv) > 3:
-        diff_files = sys.argv[3].split(",")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--temp-dir", help="Temp directory")
+    parser.add_argument("--added", help="Added files")
+    parser.add_argument("--modified", help="Modified files")
+    parser.add_argument("--diffs", help="Diff files")
+    args = parser.parse_args()
+    temp_dir = args.temp_dir
+    added_files = args.added
+    modified_files = args.modified
+    diff_files = args.diffs
 
     analyze_files(temp_dir, added_files, modified_files, diff_files)
