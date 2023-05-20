@@ -1,25 +1,38 @@
-import base64
-import json
+import os
 import sys
 
 
 def analyze_file(file):
-    print("Analyzing file:", file["file"])
+    print("Analyzing file:", file)
 
-    if "content" in file:
-        print("Content:")
-        print(file["content"])
-    if "diff" in file:
-        print("Diff:")
-        print(file["diff"])
 
-    # Perform your analysis on the file here
+def analyze_diff(diff):
+    print("Diff:")
+    print(diff)
+
+
+def analyze_files(temp_dir, added_files, modified_files, diff_files):
+    # Process added files
+    for file in added_files:
+        file_path = os.path.join(temp_dir, file)
+        analyze_file(file_path)
+
+    # Process modified files
+    for file in modified_files:
+        file_path = os.path.join(temp_dir, file)
+        analyze_file(file_path)
+
+    # Process diff files
+    for diff_file in diff_files:
+        with open(os.path.join(temp_dir, diff_file), "r") as file:
+            diff_content = file.read()
+            analyze_diff(diff_content)
 
 
 if __name__ == "__main__":
-    files_json_base64 = sys.argv[1]
-    files_json = base64.b64decode(files_json_base64).decode("utf-8")
-    files = json.loads(files_json)
+    temp_dir = sys.argv[1]
+    added_files = sys.argv[2].split(",")
+    modified_files = sys.argv[3].split(",")
+    diff_files = sys.argv[4].split(",")
 
-    for file in files:
-        analyze_file(file)
+    analyze_files(temp_dir, added_files, modified_files, diff_files)

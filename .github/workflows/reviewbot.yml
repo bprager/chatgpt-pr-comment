@@ -34,31 +34,47 @@ jobs:
           # Fetch the base branch
           git fetch origin $PR_BASE_BRANCH:$PR_BASE_BRANCH
 
-          # Get the files changed in the pull request
-          CHANGED_FILES=$(git diff --name-only $PR_BASE_BRANCH)
+          # Create a temporary directory
+          TEMP_DIR=$(mktemp -d)
+          echo "Using temporary directory: $TEMP_DIR"
 
-          # Prepare an array to store file paths
-          FILES=()
+          # Get the files changed in the pull request
+          CHANGED_FILES=$(git diff --name-status $PR_BASE_BRANCH)
+
+          # Prepare arrays to store file names
+          ADDED_FILES=()
+          MODIFIED_FILES=()
+          DIFF_FILES=()
 
           # Process each changed file
-          for FILE in $CHANGED_FILES; do
-          if [[ -f $FILE ]]; then
-              if [[ $(git log --follow --format=format: -- "$FILE" | wc -l) -gt 0 ]]; then
-              # File was changed, get old content and diff
-              OLD_CONTENT=$(git show $PR_BASE_BRANCH:"$FILE")
-              DIFF=$(git diff $PR_BASE_BRANCH "$FILE")
-              FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
-              else
-              # File was added, get file name and content
-              CONTENT=$(cat "$FILE")
-              FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
-              fi
-          fi
-          done
+          while IFS=$'\t' read -r STATUS FILE; do
+            if [[ -f $FILE ]]; then
+              if [[ $STATUS == "A" ]]; then
+                # File was added
+                FILE_NAME="$TEMP_DIR/added_${FILE//\//-}"
+                echo "$FILE" > "$FILE_NAME"
+                ADDED_FILES+=("$FILE_NAME")
+              elif [[ $STATUS == "M" ]]; then
+                # File was modified
+                FILE_NAME="$TEMP_DIR/modified_${FILE//\//-}"
+                echo "$FILE" > "$FILE_NAME"
+                MODIFIED_FILES+=("$FILE_NAME")
 
-          OUTPUT=$(echo "${FILES[*]}" | base64)
-          echo "files_base64=$OUTPUT" >> $GITHUB_OUTPUT
+                DIFF_FILE="$TEMP_DIR/diff_${FILE//\//-}.diff"
+                DIFF=$(git diff $PR_BASE_BRANCH "$FILE")
+                echo "$DIFF" > "$DIFF_FILE"
+                DIFF_FILES+=("$DIFF_FILE")
+              fi
+            fi
+            done <<< "$CHANGED_FILES"
+
+            # Set the step outputs
+            echo "::set-output name=diff_files::${DIFF_FILES[*]}"
+            echo "temp_dir=$TEMP_DIR" >> "$GITHUB_OUTPUT"
+            echo "added_files=${ADDED_FILES[*]}" >> "$GITHUB_OUTPUT"
+            echo "modified_files=${MODIFIED_FILES[*]}" >> "$GITHUB_OUTPUT"
+            echo "diff_files=${DIFF_FILES[*]}" >> "$GITHUB_OUTPUT"
 
       - name: Run Python Script
         run: |
-          python analyze.py "${{ steps.process_files.outputs.files_base64 }}"
+          python analyze.py "${{ steps.process_files.outputs.temp_dir }}" "${{ steps.process_files.outputs.added_files }}" "${{ steps.process_files.outputs.modified_files }}" "${{ steps.process_files.outputs.diff_files }}"
