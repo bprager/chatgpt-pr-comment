@@ -51,15 +51,14 @@ jobs:
               else
               # File was added, get file name and content
               CONTENT=$(cat "$FILE")
-              CONTENT=${CONTENT//\"/\\\"}  # Escape double quotes in content
-              CONTENT=${CONTENT//$'\n'/\\n}  # Escape newlines in content
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
           fi
           done
 
-          echo "::set-output name=files::${FILES[*]}"
+          OUTPUT=$(echo "${FILES[*]}" | base64)
+          echo "files_base64=$OUTPUT" >> $GITHUB_OUTPUT
 
       - name: Run Python Script
         run: |
-          python analyze.py "${{ steps.process_files.outputs.files }}"
+          python analyze.py "${{ steps.process_files.outputs.files_base64 }}"

@@ -1,3 +1,4 @@
+import base64
 import json
 import sys
 
@@ -16,7 +17,8 @@ def analyze_file(file):
 
 
 if __name__ == "__main__":
-    files_json = sys.argv[1].replace("'", '"')
+    files_json_base64 = sys.argv[1]
+    files_json = base64.b64decode(files_json_base64).decode("utf-8")
     files = json.loads(files_json)
 
     for file in files:
