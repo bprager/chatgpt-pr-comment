@@ -31,7 +31,6 @@ jobs:
           # Get the pull request information
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
           PR_BASE_BRANCH=$(jq --raw-output .pull_request.base.ref "$GITHUB_EVENT_PATH")
-          PR_HEAD_BRANCH=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
 
           # Fetch the base branch
           git fetch origin $PR_BASE_BRANCH:$PR_BASE_BRANCH
@@ -52,8 +51,7 @@ jobs:
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
               else
               # File was added, get file name and content
-              git show HEAD:"$FILE"
-              CONTENT=$(git show $PR_HEAD_BRANCH:"$FILE")
+              CONTENT=$(git show HEAD:"$FILE")
               echo "+++test"
               echo "file: $FILE"
               echo "content: $CONTENT"
