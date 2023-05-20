@@ -55,20 +55,21 @@ jobs:
                 # File was added
                 FILE_NAME="$TEMP_DIR/added_${FILE//\//-}"
                 echo "$FILE" > "$FILE_NAME"
-                ADDED_FILES+=("$FILE_NAME")
-                echo "Added file: $FILE_NAME"
+                ADDED_FILES+=("$FILE")
+                echo "Added file: $FILE"
               elif [[ $STATUS == "M" ]]; then
                 # File was modified
                 FILE_NAME="$TEMP_DIR/modified_${FILE//\//-}"
                 echo "$FILE" > "$FILE_NAME"
-                MODIFIED_FILES+=("$FILE_NAME")
-                echo "Modified file: $FILE_NAME"
+                MODIFIED_FILES+=("$FILE")
+                echo "Modified file: $FILE"
 
-                DIFF_FILE="$TEMP_DIR/diff_${FILE//\//-}.diff"
+                DIFF_FILE_NAME="diff_${FILE//\//-}.diff"
+                DIFF_FILE="$TEMP_DIR/$DIFF_FILE_NAME"
                 DIFF=$(git diff $PR_BASE_BRANCH "$FILE")
                 echo "$DIFF" > "$DIFF_FILE"
-                DIFF_FILES+=("$DIFF_FILE")
-                echo "Diff file: $DIFF_FILE"
+                DIFF_FILES+=("$DIFF_FILE_NAME")
+                echo "Diff file: $DIFF_FILE_NAME"
               fi
             fi
             done <<< "$CHANGED_FILES"
@@ -85,4 +86,4 @@ jobs:
 
       - name: Run Python Script
         run: |
-          python analyze.py "${{ steps.process_files.outputs.temp_dir }}" "${{ steps.process_files.outputs.added_files }}" "${{ steps.process_files.outputs.modified_files }}" "${{ steps.process_files.outputs.diff_files }}"
+          python analyze.py "${{ steps.process_files.outputs.added_files }}" "${{ steps.process_files.outputs.modified_files }}" "${{ steps.process_files.outputs.diff_files }}"

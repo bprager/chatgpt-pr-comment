@@ -12,7 +12,6 @@ def analyze_diff(diff):
 
 
 def analyze_files(temp_dir, added_files, modified_files, diff_files):
-    print("Temp dir:", temp_dir)
     # Process added files
     print("Added files:", added_files)
     for file in added_files:
