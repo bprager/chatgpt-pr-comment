@@ -18,7 +18,11 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
         added_files = []
     print("Added files:", added_files)
     for file in added_files:
+        print("File:", file)
         file_path = os.path.join(temp_dir, file)
+        print(f"isfile: {os.path.isfile(file_path)}")
+        print(f"is readable: {os.access(file_path, os.R_OK)}")
+        print(f"is dir: {os.path.isdir(file_path)}")
         if (
             os.path.isfile(file_path)
             and os.access(file_path, os.R_OK)
