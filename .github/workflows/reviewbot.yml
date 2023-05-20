@@ -26,7 +26,6 @@ jobs:
         id: process_files
         run: |
           #!/bin/bash
-          set -x
 
           # Get the pull request information
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
@@ -51,14 +50,15 @@ jobs:
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$OLD_CONTENT\", \"diff\": \"$DIFF\"}")
               else
               # File was added, get file name and content
-              CONTENT=$(git show HEAD:"$FILE")
+              CONTENT=$(cat "$FILE")
               CONTENT=${CONTENT//\"/\\\"}  # Escape double quotes in content
+              CONTENT=${CONTENT//$'\n'/\\n}  # Escape newlines in content
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
           fi
           done
 
-          echo "files=$(echo ${FILES[*]})" >> $GITHUB_OUTPUT
+          echo "::set-output name=files::${FILES[*]}"
 
       - name: Run Python Script
         run: |
