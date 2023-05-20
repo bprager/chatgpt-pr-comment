@@ -26,6 +26,7 @@ jobs:
         id: process_files
         run: |
           #!/bin/bash
+          set -x
 
           # Get the pull request information
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
@@ -52,8 +53,8 @@ jobs:
               # File was added, get file name and content
               CONTENT=$(cat "$FILE")
               echo "+++test"
-              echo "file: $FILE"
-              echo "content: $CONTENT"
+              echo "$FILE"
+              echo "$CONTENT"
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
           fi
