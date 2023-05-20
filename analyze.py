@@ -34,6 +34,8 @@ def analyze_files(temp_dir, added_files, modified_files, diff_files):
 
 if __name__ == "__main__":
     added_files = sys.argv[1].split(",")
+    modified_files = []
+    diff_files = []
     if len(sys.argv) > 1:
         modified_files = sys.argv[2].split(",")
         diff_files = sys.argv[3].split(",")
