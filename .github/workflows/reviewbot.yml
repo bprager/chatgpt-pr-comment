@@ -40,6 +40,7 @@ jobs:
 
           # Get the files changed in the pull request
           CHANGED_FILES=$(git diff --name-status $PR_BASE_BRANCH)
+          echo "Changed files: $CHANGED_FILES"
 
           # Prepare arrays to store file names
           ADDED_FILES=()
@@ -48,22 +49,26 @@ jobs:
 
           # Process each changed file
           while IFS=$'\t' read -r STATUS FILE; do
+            echo "Processing file: $FILE"
             if [[ -f $FILE ]]; then
               if [[ $STATUS == "A" ]]; then
                 # File was added
                 FILE_NAME="$TEMP_DIR/added_${FILE//\//-}"
                 echo "$FILE" > "$FILE_NAME"
                 ADDED_FILES+=("$FILE_NAME")
+                echo "Added file: $FILE_NAME"
               elif [[ $STATUS == "M" ]]; then
                 # File was modified
                 FILE_NAME="$TEMP_DIR/modified_${FILE//\//-}"
                 echo "$FILE" > "$FILE_NAME"
                 MODIFIED_FILES+=("$FILE_NAME")
+                echo "Modified file: $FILE_NAME"
 
                 DIFF_FILE="$TEMP_DIR/diff_${FILE//\//-}.diff"
                 DIFF=$(git diff $PR_BASE_BRANCH "$FILE")
                 echo "$DIFF" > "$DIFF_FILE"
                 DIFF_FILES+=("$DIFF_FILE")
+                echo "Diff file: $DIFF_FILE"
               fi
             fi
             done <<< "$CHANGED_FILES"
