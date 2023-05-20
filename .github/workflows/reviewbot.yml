@@ -52,9 +52,7 @@ jobs:
               else
               # File was added, get file name and content
               CONTENT=$(git show HEAD:"$FILE")
-              echo "+++test"
-              echo "file: $FILE"
-              echo "content: $CONTENT"
+              CONTENT=${CONTENT//\"/\\\"}  # Escape double quotes in content
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
           fi
