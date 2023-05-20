@@ -32,9 +32,7 @@ git br -D example_branch
 git co -b example_branch
 
 # create test file
-mkdir -p examples
-touch examples/main.py
-cat examples/main.py << EOF
+cat << EOF > examples/main.py
 print("Hello world!")
 EOF
 
