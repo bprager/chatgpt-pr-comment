@@ -60,7 +60,7 @@ jobs:
           fi
           done
 
-          echo "name=$(echo ${FILES[*]})" >> $GITHUB_OUTPUT
+          echo "files=$(echo ${FILES[*]})" >> $GITHUB_OUTPUT
 
       - name: Run Python Script
         run: |
