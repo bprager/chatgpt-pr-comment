@@ -17,9 +17,9 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     for file in added_files:
         file_path = os.path.join(temp_dir, file)
         if (
-            os.isfile(file_path)
+            os.path.isfile(file_path)
             and os.access(file_path, os.R_OK)
-            and not os.isdir(file_path)
+            and not os.path.isdir(file_path)
         ):
             analyze_file(file_path)
 
@@ -28,9 +28,9 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     for file in modified_files:
         file_path = os.path.join(temp_dir, file)
         if (
-            os.isfile(file_path)
+            os.path.isfile(file_path)
             and os.access(file_path, os.R_OK)
-            and not os.isdir(file_path)
+            and not os.path.isdir(file_path)
         ):
             analyze_file(file_path)
 
@@ -39,9 +39,9 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     for diff_file in diff_files:
         diff_file_path = os.path.join(temp_dir, diff_file)
         if (
-            os.isfile(diff_file_path)
+            os.path.isfile(diff_file_path)
             and os.access(diff_file_path, os.R_OK)
-            and not os.isdir(diff_file_path)
+            and not os.path.isdir(diff_file_path)
         ):
             with open(diff_file_path, "r") as file:
                 diff_content = file.read()
