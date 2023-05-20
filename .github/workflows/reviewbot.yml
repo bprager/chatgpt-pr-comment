@@ -53,8 +53,8 @@ jobs:
               # File was added, get file name and content
               CONTENT=$(cat "$FILE")
               echo "+++test"
-              echo "$FILE"
-              echo "$CONTENT"
+              echo "file: $FILE"
+              echo "content: $CONTENT"
               FILES+=("{\"file\": \"$FILE\", \"content\": \"$CONTENT\"}")
               fi
           fi
