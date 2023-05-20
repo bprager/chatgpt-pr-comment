@@ -38,6 +38,7 @@ if __name__ == "__main__":
     diff_files = []
     if len(sys.argv) > 1:
         modified_files = sys.argv[2].split(",")
+    if len(sys.argv) > 2:
         diff_files = sys.argv[3].split(",")
 
     analyze_files(added_files, modified_files, diff_files)
