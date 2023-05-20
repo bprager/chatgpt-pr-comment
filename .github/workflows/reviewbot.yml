@@ -76,6 +76,7 @@ jobs:
             echo "Added files: ${ADDED_FILES[*]}"
             echo "Modified files: ${MODIFIED_FILES[*]}"
             echo "Diff files: ${DIFF_FILES[*]}"
+            echo "Temp dir content: $(ls -l $TEMP_DIR)"
 
             # Set the step outputs
             echo "temp_dir=$TEMP_DIR" >> "$GITHUB_OUTPUT"
