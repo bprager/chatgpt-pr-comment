@@ -67,8 +67,8 @@ if __name__ == "__main__":
     parser.add_argument("--diffs", help="Diff files")
     args = parser.parse_args()
     temp_dir = args.temp_dir
-    added_files = args.added
-    modified_files = args.modified
-    diff_files = args.diffs
+    added_files = args.added.split(",")
+    modified_files = args.modified.split(",")
+    diff_files = args.diffs.split(",")
 
     analyze_files(temp_dir, added_files, modified_files, diff_files)
