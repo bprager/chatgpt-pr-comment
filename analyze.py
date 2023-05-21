@@ -1,10 +1,35 @@
 import argparse
 import os
-import sys
+import requests
+
+
+def pr_comment(body):
+    # Access repository and owner
+    repo = os.environ["GITHUB_REPOSITORY"]
+    owner = repo.split("/")[0]
+    # Access pull request number
+    pull_request_number = os.environ["PR_NUMBER"]
+
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/issues/{pull_request_number}/comments"
+
+    token = os.environ["GITHUB_TOKEN"]
+
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+    data = {"body": body}
+    response = requests.post(api_url, headers=headers, json=data)
+
+    if response.status_code == 201:
+        print("Comment submitted successfully!")
+    else:
+        print(f"Failed to submit comment. Status code: {response.status_code}.")
+        print(response.text)
 
 
 def analyze_file(file):
-    print("Analyzing file:", file)
+    pr_comment(f"Analyzing file: {file}")
 
 
 def analyze_diff(diff):
