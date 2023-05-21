@@ -4,11 +4,14 @@ import requests
 
 
 def pr_comment(body):
+    print(f'GITHUB_REPOSITORY={os.environ["GITHUB_REPOSITORY"]}')
+    print(f'GITHUB_REF = {os.environ["GITHUB_REF"]}')
+
     # Access repository and owner
     repo = os.environ["GITHUB_REPOSITORY"]
     owner = repo.split("/")[0]
     # Access pull request number
-    pull_request_number = os.environ["PR_NUMBER"]
+    pull_request_number = os.environ["GITHUB_REF"].split("/")[-1]
 
     api_url = f"https://api.github.com/repos/{owner}/{repo}/issues/{pull_request_number}/comments"
 
