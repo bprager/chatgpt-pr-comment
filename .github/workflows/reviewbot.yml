@@ -53,18 +53,18 @@ jobs:
             if [[ -f $FILE ]]; then
               if [[ $STATUS == "A" ]]; then
                 # File was added
-                FILE_NAME="$TEMP_DIR/added_${FILE//\//-}"
+                FILE_NAME="$TEMP_DIR/${FILE//\//-}"
                 echo "$FILE" > "$FILE_NAME"
                 ADDED_FILES+=("$FILE")
                 echo "Added file: $FILE"
               elif [[ $STATUS == "M" ]]; then
                 # File was modified
-                FILE_NAME="$TEMP_DIR/modified_${FILE//\//-}"
+                FILE_NAME="$TEMP_DIR/${FILE//\//-}"
                 echo "$FILE" > "$FILE_NAME"
                 MODIFIED_FILES+=("$FILE")
                 echo "Modified file: $FILE"
 
-                DIFF_FILE_NAME="diff_${FILE//\//-}.diff"
+                DIFF_FILE_NAME="${FILE//\//-}.diff"
                 DIFF_FILE="$TEMP_DIR/$DIFF_FILE_NAME"
                 DIFF=$(git diff $PR_BASE_BRANCH "$FILE")
                 echo "$DIFF" > "$DIFF_FILE"
