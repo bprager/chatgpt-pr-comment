@@ -13,7 +13,9 @@ def pr_comment(body):
     # Access pull request number
     pull_request_number = os.environ["GITHUB_REF"].split("/")[2]
 
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/issues/{pull_request_number}/comments"
+    api_url = (
+        f"https://api.github.com/repos/{repo}/issues/{pull_request_number}/comments"
+    )
     print(f"API URL: {api_url}")
 
     token = os.environ["GITHUB_TOKEN"]
