@@ -96,4 +96,4 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python analyze.py --temp-dir "${{ steps.process_files.outputs.temp_dir }}" --added "${{ steps.process_files.outputs.added_files }}" --modified "${{ steps.process_files.outputs.modified_files }}" --diffs "${{ steps.process_files.outputs.diff_files }}"
+          python chatgpt_agent.py --temp-dir "${{ steps.process_files.outputs.temp_dir }}" --added "${{ steps.process_files.outputs.added_files }}" --modified "${{ steps.process_files.outputs.modified_files }}" --diffs "${{ steps.process_files.outputs.diff_files }}"

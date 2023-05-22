@@ -18,3 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial version with "GPT-3.5-turbo"
+
+## [0.21.0] - Mon May 22 10:22:09 PDT 2023
+
+### Changed
+
+- Workflow optimization in Bash scripting
