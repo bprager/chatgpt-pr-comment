@@ -12,7 +12,7 @@ Limit to 300 words.
 """
 
 
-def get_completion(prompt, model="gpt-3.5-turbo"):
+def get_completion(prompt: str, model: str = "gpt-3.5-turbo") -> str:
     openai.api_key = os.getenv("OPENAI_API_KEY")
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
@@ -20,10 +20,10 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
         messages=messages,
         temperature=0,  # this is the degree of randomness of the model's output
     )
-    response = response.choices[0].message["content"]
+    return response.choices[0].message["content"]
 
 
-def pr_comment(body):
+def pr_comment(body: str) -> None:
     print(f'GITHUB_REPOSITORY={os.environ["GITHUB_REPOSITORY"]}')
     print(f'GITHUB_REF = {os.environ["GITHUB_REF"]}')
 
@@ -54,7 +54,7 @@ def pr_comment(body):
         print(response.text)
 
 
-def analyze_added_file(file, language):
+def analyze_added_file(file: str, language: str) -> None:
     with open(file, "r") as f:
         content = f.read()
     prompt = (
@@ -72,7 +72,7 @@ review a pull request for adding this source code:
     pr_comment(f"ChatGPT commented:\n{completion}")
 
 
-def analyze_modified_file(file, diff_file, language):
+def analyze_modified_file(file: str, diff_file: str, language: str) -> None:
     with open(diff_file, "r") as f:
         diff_content = f.read()
     with open(file, "r") as f:
@@ -96,7 +96,12 @@ to this code:
     pr_comment(f"ChatGPT commented:\n{completion}")
 
 
-def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
+def analyze_files(
+    temp_dir: str,
+    added_files: list[str] = [],
+    modified_files: list[str] = [],
+    diff_files: list[str] = [],
+):
     # languages we proceed with
     languages = {
         ".py": "Python",
@@ -104,9 +109,6 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
         ".cpp": "C++",
         ".js": "JavaScript",
     }
-    # Process added files
-    if not added_files:
-        added_files = []
     print("Added files:", added_files)
     for file in added_files:
         print("File:", file)
