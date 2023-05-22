@@ -115,7 +115,7 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
             and not os.path.isdir(file_path)
             and extension in languages
         ):
-            analyze_added_file(file_path, diff_file_path, languages[extension])
+            analyze_added_file(file_path, languages[extension])
 
     if not modified_files:
         modified_files = []
