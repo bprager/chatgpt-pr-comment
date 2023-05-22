@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test "GTP-4" availability
 - Test edge case
 - Improve documentation
+- Reduce file copies
 
 ## [0.1.0] - Tue May 16 21:14:00 PDT 2023
 

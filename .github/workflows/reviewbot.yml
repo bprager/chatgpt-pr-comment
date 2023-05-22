@@ -61,13 +61,13 @@ jobs:
               if [[ $STATUS == "A" ]]; then
                 # File was added
                 FILE_NAME="$TEMP_DIR/${FILE}"
-                echo "$FILE" > "$FILE_NAME"
+                cat "$FILE" > "$FILE_NAME"
                 ADDED_FILES+=("$FILE")
                 echo "Added file: $FILE"
               elif [[ $STATUS == "M" ]]; then
                 # File was modified
                 FILE_NAME="$TEMP_DIR/${FILE}"
-                echo "$FILE" > "$FILE_NAME"
+                cat "$FILE" > "$FILE_NAME"
                 MODIFIED_FILES+=("$FILE")
                 echo "Modified file: $FILE"
 
