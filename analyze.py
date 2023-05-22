@@ -1,6 +1,26 @@
 import argparse
 import os
 import requests
+import openai
+
+task_prompt = """
+Comment next on code quality of this pull request, \
+any potential security risk if they exist. \
+Make suggestions how the code could be improved if there are any. \
+Otherwise compliment the author on his code. \
+Limit to 300 words. 
+"""
+
+
+def get_completion(prompt, model="gpt-3.5-turbo"):
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=0,  # this is the degree of randomness of the model's output
+    )
+    response = response.choices[0].message["content"]
 
 
 def pr_comment(body):
@@ -34,16 +54,53 @@ def pr_comment(body):
         print(response.text)
 
 
-def analyze_file(file):
-    pr_comment(f"Analyzing file: {file}")
+def analyze_added_file(file, language):
+    with open(file, "r") as f:
+        content = f.read()
+    prompt = (
+        f"""
+Your task as an experience ```{language}``` programmer is to \ 
+review a pull request for adding this source code:
+---
+```{content}```
+---
+.
+"""
+        + prompt
+    )
+    completion = get_completion(prompt)
+    pr_comment(f"ChatGPT commented:\n{completion}")
 
 
-def analyze_diff(diff):
-    print("Diff:")
-    print(diff)
+def analyze_modified_file(file, diff_file, language):
+    with open(diff_file, "r") as f:
+        diff_content = f.read()
+    with open(file, "r") as f:
+        content = f.read()
+    prompt = f"""
+Your task as an experience ```{language}``` programmer is to \ 
+review a pull request to add following change:
+---
+```{diff_content}```
+---
+to this code:
+---
+```{content}```
+---
+. Focus on the changes made by the diff file.
+"""
+    completion = get_completion(prompt)
+    pr_comment(f"ChatGPT commented:\n{completion}")
 
 
 def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
+    # languages we proceed with
+    languages = {
+        ".py": "Python",
+        ".java": "Java",
+        ".cpp": "C++",
+        ".js": "JavaScript",
+    }
     # Process added files
     if not added_files:
         added_files = []
@@ -51,16 +108,14 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     for file in added_files:
         print("File:", file)
         file_path = os.path.join(temp_dir, file)
-        print("File path:", file_path)
-        print(f"isfile: {os.path.isfile(file_path)}")
-        print(f"is readable: {os.access(file_path, os.R_OK)}")
-        print(f"is dir: {os.path.isdir(file_path)}")
+        base_name, extension = os.path.splitext(file_path)
         if (
             os.path.isfile(file_path)
             and os.access(file_path, os.R_OK)
             and not os.path.isdir(file_path)
+            and extension in languages
         ):
-            analyze_file(file_path)
+            analyze_added_file(file_path, diff_file_path, languages[extension])
 
     if not modified_files:
         modified_files = []
@@ -68,12 +123,18 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
     print("Modified files:", modified_files)
     for file in modified_files:
         file_path = os.path.join(temp_dir, file)
+        base_name, extension = os.path.splitext(file_path)
+        diff_file_path = base_name + ".diff"
         if (
             os.path.isfile(file_path)
             and os.access(file_path, os.R_OK)
             and not os.path.isdir(file_path)
+            and os.path.isfile(diff_file_path)
+            and os.access(diff_file_path, os.R_OK)
+            and not os.path.isdir(diff_file_path)
+            and extension in languages
         ):
-            analyze_file(file_path)
+            analyze_modified_file(file_path, diff_file_path, languages[extension])
 
     # Process diff files
     if not diff_files:
@@ -88,7 +149,7 @@ def analyze_files(temp_dir, added_files, modified_files=[], diff_files=[]):
         ):
             with open(diff_file_path, "r") as file:
                 diff_content = file.read()
-                analyze_diff(diff_content)
+                analyze_modified_file(diff_content)
 
 
 if __name__ == "__main__":
