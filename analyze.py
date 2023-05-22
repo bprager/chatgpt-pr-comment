@@ -55,8 +55,10 @@ def pr_comment(body: str) -> None:
 
 
 def analyze_added_file(file: str, language: str) -> None:
+    print(f"analyze_added_file: {file}, language: {language}")
     with open(file, "r") as f:
         content = f.read()
+    print(f"Content: {content}")
     prompt = (
         f"""
 Your task as an experience ```{language}``` programmer is to \ 
@@ -68,6 +70,7 @@ review a pull request for adding this source code:
 """
         + task_prompt
     )
+    print(f"Prompt: {prompt}")
     completion = get_completion(prompt)
     pr_comment(f"ChatGPT commented:\n{completion}")
 
