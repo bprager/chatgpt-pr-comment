@@ -64,9 +64,9 @@ review a pull request for adding this source code:
 ---
 ```{content}```
 ---
-.
+. 
 """
-        + prompt
+        + task_prompt
     )
     completion = get_completion(prompt)
     pr_comment(f"ChatGPT commented:\n{completion}")
@@ -77,7 +77,8 @@ def analyze_modified_file(file, diff_file, language):
         diff_content = f.read()
     with open(file, "r") as f:
         content = f.read()
-    prompt = f"""
+    prompt = (
+        f"""
 Your task as an experience ```{language}``` programmer is to \ 
 review a pull request to add following change:
 ---
@@ -89,6 +90,8 @@ to this code:
 ---
 . Focus on the changes made by the diff file.
 """
+        + task_prompt
+    )
     completion = get_completion(prompt)
     pr_comment(f"ChatGPT commented:\n{completion}")
 
