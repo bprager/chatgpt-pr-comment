@@ -11,8 +11,8 @@ Otherwise compliment the author on his code. \
 Limit to 300 words. 
 """
 
-# gpt-3.5-turbo, gtp-4
-def get_completion(prompt: str, model: str = "gpt-4") -> str:
+# gpt-3.5-turbo, (gtp-4 not available from GitHub as of 06-05-23)
+def get_completion(prompt: str, model: str = "gpt-3.5-turbo") -> str:
     openai.api_key = os.getenv("OPENAI_API_KEY")
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
