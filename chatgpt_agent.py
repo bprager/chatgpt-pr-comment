@@ -144,21 +144,6 @@ def analyze_files(
         ):
             analyze_modified_file(file_path, diff_file_path, languages[extension])
 
-    # Process diff files
-    if not diff_files:
-        diff_files = []
-    print("Diff files:", diff_files)
-    for diff_file in diff_files:
-        diff_file_path = os.path.join(temp_dir, diff_file)
-        if (
-            os.path.isfile(diff_file_path)
-            and os.access(diff_file_path, os.R_OK)
-            and not os.path.isdir(diff_file_path)
-        ):
-            with open(diff_file_path, "r") as file:
-                diff_content = file.read()
-                analyze_modified_file(diff_content)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
