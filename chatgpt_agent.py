@@ -11,6 +11,7 @@ Otherwise compliment the author on his code. \
 Limit to 300 words. 
 """
 
+
 # gpt-3.5-turbo, (gtp-4 not available from GitHub as of 06-05-23)
 def get_completion(prompt: str, model: str = "gpt-3.5-turbo") -> str:
     openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -29,7 +30,7 @@ def pr_comment(body: str) -> None:
 
     # Access repository and owner
     repo = os.environ["GITHUB_REPOSITORY"]
-    owner = repo.split("/")[0]
+    # owner = repo.split("/")[0]
     # Access pull request number
     pull_request_number = os.environ["GITHUB_REF"].split("/")[2]
 
@@ -103,7 +104,6 @@ def analyze_files(
     temp_dir: str,
     added_files: list[str] = [],
     modified_files: list[str] = [],
-    diff_files: list[str] = [],
 ):
     # languages we proceed with
     languages = {
@@ -157,4 +157,4 @@ if __name__ == "__main__":
     modified_files = args.modified.split(" ")
     diff_files = args.diffs.split(" ")
 
-    analyze_files(temp_dir, added_files, modified_files, diff_files)
+    analyze_files(temp_dir, added_files, modified_files)

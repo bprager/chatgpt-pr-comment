@@ -1,0 +1,6 @@
+projectKey=Vizio
+serverUrl=http://172.23.210.109:9000
+serverVersion=10.0.0.68432
+dashboardUrl=http://172.23.210.109:9000/dashboard?id=Vizio
+ceTaskId=AYiSBTCsAPb9_D-CGBmG
+ceTaskUrl=http://172.23.210.109:9000/api/ce/task?id=AYiSBTCsAPb9_D-CGBmG
