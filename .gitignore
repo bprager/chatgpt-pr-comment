@@ -162,3 +162,17 @@ test.sh
 
 # VS Code
 .vscode/
+
+# SonarCube
+.scannerwork/
+
+# All temp stuff
+tmp*
+
+# pyenv
+bin/
+lib/
+lib64
+
+# all videos
+videos/
